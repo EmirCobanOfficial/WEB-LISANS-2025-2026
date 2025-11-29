@@ -39,6 +39,14 @@ export const api = {
     getAuthorizedUsers: () => fetchJSON('/api/authorized-users'), // YENİ: Giriş yapanları getiren rota
     getPanelLogs: () => fetchJSON('/api/panel-logs'), // YENİ: Panel loglarını getiren rota
 
+    // YENİ: Müzik API
+    getMusicQueue: (guildId) => fetchJSON(`/api/guild/${guildId}/music/queue`),
+    controlMusic: (guildId, action) => fetchJSON(`/api/guild/${guildId}/music/control`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+    }),
+
     // POST, PATCH, DELETE istekleri
     saveSettings: (guildId, moduleName, newSettings) => fetchJSON('/api/settings', {
         method: 'POST',

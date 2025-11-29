@@ -111,6 +111,19 @@ export const markUnsavedChanges = (element) => {
 };
 
 /**
+ * YENİ: "protected-item" sınıfına sahip bir liste öğesi oluşturur.
+ * Bu, farklı eklentilerde (Guard, AutoMod vb.) rol/kanal listeleri için yeniden kullanılır.
+ * @param {string} name Öğenin adı (örn: rol adı)
+ * @param {string} id Öğenin ID'si
+ * @returns {HTMLElement} Oluşturulan div öğesi
+ */
+function createProtectedItem(name, id) {
+    const item = document.createElement('div');
+    item.className = 'protected-item';
+    item.innerHTML = `<span>${name}</span><button type="button" class="remove-item-btn" data-id="${id}"><i class="fa-solid fa-trash-can"></i></button>`;
+    return item;
+}
+/**
  * YENİ: Bot sahibi kartının görünürlüğünü ayarlar.
  * Bu fonksiyon, kullanıcının bot sahibi olup olmadığını kontrol eder ve
  * "Bot Durumu" kartını buna göre gösterir veya gizler.
@@ -134,6 +147,44 @@ export const populateSelect = (select, items, selectedId, options = {}) => {
         });
     }
 };
+
+// YENİ: Yasaklı Kelime Listesini Render Et
+export function renderBannedWordsList(words) {
+    const listContainer = document.getElementById('banned-words-list');
+    if (!listContainer) return;
+    listContainer.innerHTML = '';
+    if (!words || words.length === 0) {
+        listContainer.innerHTML = '<p class="setting-description" style="text-align: center; margin-top: 10px;">Henüz yasaklı kelime eklenmemiş.</p>';
+        return;
+    }
+    words.forEach(word => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.innerHTML = `
+            <span class="list-item-label">${word}</span>
+            <div class="list-item-actions">
+                <button type="button" class="remove-item-btn" data-word="${word}"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+        `;
+        listContainer.appendChild(item);
+    });
+}
+
+// YENİ: Oto-Mod Görmezden Gelinecek Roller Listesini Render Et
+export function renderAutoModIgnoredRoles(allRoles, ignoredRoleIds = []) {
+    const listContainer = document.getElementById('automod-ignored-roles-list');
+    const select = document.getElementById('automod-ignored-role-select');
+    if (!listContainer || !select) return;
+
+    listContainer.innerHTML = '';
+    ignoredRoleIds.forEach(roleId => {
+        const role = allRoles.find(r => r.id === roleId);
+        if (role) {
+            listContainer.appendChild(createProtectedItem(role.name, role.id));
+        }
+    });
+    populateSelect(select, allRoles.filter(r => !ignoredRoleIds.includes(r.id)), null, { defaultText: 'Bir rol seçin...' });
+}
 
 // --- Eklentiye Özel Liste Oluşturma Fonksiyonları ---
 

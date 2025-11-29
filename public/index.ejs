@@ -41,6 +41,9 @@
           <a href="#" class="nav-link" data-page="audit-log-page">
             <i class="fa-solid fa-clipboard-list fa-fw"></i> Denetim Kaydı
           </a>
+          <a href="#" class="nav-link" data-page="music-player-page">
+            <i class="fa-solid fa-circle-play fa-fw"></i> Müzik Çalar
+          </a>
           <a href="#" class="nav-link" data-page="mod-log-page">
             <i class="fa-solid fa-gavel fa-fw"></i> Moderasyon Logları
           </a>
@@ -418,6 +421,112 @@
                 <button class="save-button" data-action="save-plugin">
                   Ayarları Kaydet<span class="unsaved-indicator"></span>
                 </button>
+              </div>
+
+              <!-- YENİ: Otomatik Moderasyon Kartı -->
+              <div class="plugin-card" data-module="autoModeration">
+                <div class="plugin-header">
+                  <i class="fa-solid fa-robot"></i>
+                  <h3>Otomatik Moderasyon</h3>
+                  <i class="fa-solid fa-chevron-down collapse-icon"></i>
+                  <label class="switch" style="margin-left: auto">
+                    <input type="checkbox" data-setting="enabled" class="enable-toggle" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <p class="plugin-description">
+                  Yasaklı kelimeleri, etiket spamını ve büyük harf kullanımını otomatik olarak denetleyin.
+                </p>
+                <div class="plugin-settings">
+                  <!-- Yasaklı Kelimeler Alt Bölümü -->
+                  <div class="sub-plugin">
+                    <div class="sub-plugin-header">
+                      <h4>Yasaklı Kelime Filtresi</h4>
+                    </div>
+                    <div class="plugin-settings" style="display: flex;">
+                      <label>Yasaklı Kelimeler</label>
+                      <p class="setting-description">
+                        Bu kelimeleri içeren mesajlar otomatik olarak işleme alınır.
+                      </p>
+                      <div class="add-item-container">
+                        <input type="text" id="new-banned-word" class="setting-input" placeholder="Yeni kelime ekle...">
+                        <button id="add-banned-word-btn" type="button" class="add-btn">Ekle</button>
+                      </div>
+                      <div id="banned-words-list" class="item-list-container"></div>
+                      <label style="margin-top: 15px;">Uygulanacak Eylem</label>
+                      <select data-setting="bannedWordsAction" class="setting-select">
+                        <option value="delete_warn">Sil ve Uyar</option>
+                        <option value="delete">Sadece Sil</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Etiket Spam Alt Bölümü -->
+                  <div class="sub-plugin">
+                    <div class="sub-plugin-header">
+                      <h4>Etiket (Mention) Spam Koruması</h4>
+                      <label class="switch">
+                        <input type="checkbox" data-setting="mentionSpamEnabled" />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                    <div class="plugin-settings">
+                      <label>Etiket Limiti</label>
+                      <p class="setting-description">
+                        Bir mesajda bu sayıya eşit veya daha fazla etiket varsa spam sayılır.
+                      </p>
+                      <input type="number" data-setting="mentionSpamLimit" class="setting-input" min="2" value="7">
+                      <label style="margin-top: 15px;">Uygulanacak Eylem</label>
+                      <select data-setting="mentionSpamAction" class="setting-select">
+                        <option value="warn">Uyar</option>
+                        <option value="timeout">Sustur (10 dk)</option>
+                        <option value="kick">At</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Büyük Harf Spam Alt Bölümü -->
+                  <div class="sub-plugin">
+                    <div class="sub-plugin-header">
+                      <h4>Büyük Harf (Caps Lock) Koruması</h4>
+                      <label class="switch">
+                        <input type="checkbox" data-setting="capsLockSpamEnabled" />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                    <div class="plugin-settings">
+                      <label>Büyük Harf Oranı (%)</label>
+                      <p class="setting-description">
+                        Bir mesajdaki harflerin yüzde kaçı büyükse spam sayılır.
+                      </p>
+                      <input type="number" data-setting="capsLockSpamPercentage" class="setting-input" min="10" max="100" value="70">
+                      <label style="margin-top: 15px;">Uygulanacak Eylem</label>
+                      <select data-setting="capsLockSpamAction" class="setting-select">
+                        <option value="warn">Uyar</option>
+                        <option value="delete">Mesajı Sil</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <hr class="separator" />
+                  <label>Görmezden Gelinecek Roller</label>
+                  <p class="setting-description">
+                    Bu rollerdeki üyeler otomatik moderasyondan etkilenmez.
+                  </p>
+                  <div id="automod-ignored-roles-list" class="protected-list"></div>
+                  <div class="add-item-container" style="margin-top: 10px">
+                    <select id="automod-ignored-role-select" class="setting-select"></select>
+                    <button id="add-automod-ignored-role-btn" type="button" class="add-btn">Ekle</button>
+                  </div>
+
+                  <hr class="separator" />
+                  <label>Log Kanalı</label>
+                  <p class="setting-description">
+                    Tüm otomatik moderasyon eylemleri bu kanala bildirilir.
+                  </p>
+                  <select data-setting="logChannelId" class="setting-select"></select>
+                </div>
+                <button class="save-button" data-action="save-plugin">Ayarları Kaydet<span class="unsaved-indicator"></span></button>
               </div>
 
             </div>
@@ -890,6 +999,38 @@
                   </p>
                   <textarea data-setting="welcomeMessage" placeholder="Aramıza hoş geldin {user}! {server} sunucusuna başarıyla kaydın yapıldı."></textarea>
 
+                </div>
+                <button class="save-button" data-action="save-plugin">
+                  Ayarları Kaydet<span class="unsaved-indicator"></span>
+                </button>
+              </div>
+
+              <!-- YENİ: Müzik Sistemi Kartı -->
+              <div class="plugin-card" data-module="music">
+                <div class="plugin-header">
+                  <i class="fa-solid fa-music"></i>
+                  <h3>Müzik Sistemi</h3>
+                  <i class="fa-solid fa-chevron-down collapse-icon"></i>
+                  <label class="switch" style="margin-left: auto">
+                    <input
+                      type="checkbox"
+                      data-setting="enabled"
+                      class="enable-toggle"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <p class="plugin-description">
+                  Sunucunuzda YouTube, Spotify gibi platformlardan müzik çalın.
+                  Komutlar: /play, /skip, /queue, /stop
+                </p>
+                <div class="plugin-settings">
+                  <label>DJ Rolü (İsteğe Bağlı)</label>
+                  <p class="setting-description">
+                    Sadece bu role sahip üyelerin müzik komutlarını kullanmasına izin verin.
+                    Boş bırakılırsa herkes kullanabilir.
+                  </p>
+                  <select data-setting="djRoleId" class="setting-select"></select>
                 </div>
                 <button class="save-button" data-action="save-plugin">
                   Ayarları Kaydet<span class="unsaved-indicator"></span>
@@ -1449,6 +1590,44 @@
               </div>
           </div>
         </div>
+
+        <!-- YENİ: Müzik Çalar Sayfası -->
+        <div class="page-content" id="music-player-page" style="display: none;">
+          <header class="main-header">
+            <h2><i class="fa-solid fa-circle-play"></i> Müzik Çalar</h2>
+            <div class="header-controls">
+              <button id="music-refresh-btn" class="header-action-btn">
+                <i class="fa-solid fa-arrows-rotate"></i> Yenile
+              </button>
+            </div>
+          </header>
+          <!-- YENİ: Beta Uyarısı -->
+          <div class="beta-notice">
+            <i class="fa-solid fa-flask-vial"></i>
+            <div>
+              <strong>Beta Özelliği:</strong> Bu müzik çalar özelliği geliştirme aşamasındadır. Şarkılar hatalı bulunabilir veya bazen hiç bulunamayabilir. Anlayışınız için teşekkür eder, ileriki güncellemelerde üzerinde çalışılacağını belirtmek isteriz.
+            </div>
+          </div>
+          <!-- Beta Uyarısı Sonu -->
+          <div id="music-player-container">
+            <!-- Müzik çalar arayüzü buraya JS ile eklenecek -->
+            <div class="access-denied-notice">
+              <i class="fa-solid fa-headphones"></i>
+              <h3>Sessizlik...</h3>
+              <p>Şu anda bu sunucuda çalan bir müzik yok veya bot bir ses kanalında değil.</p>
+            </div>
+          </div>
+          <div class="plugin-category-header" style="margin-top: 40px;">
+            Sıradaki Şarkılar
+          </div>
+          <div id="music-queue-container" class="audit-log-container" style="padding: 15px;">
+            <div id="music-queue-list" class="leaderboard-container" style="gap: 8px;">
+              <!-- Müzik sırası buraya JS ile eklenecek -->
+              <p class="setting-description" style="text-align: center;">Sırada şarkı yok.</p>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
 

@@ -15,6 +15,7 @@ import { initWarningsPage } from './pages/warnings.js'; // YENİ
 import { initBansPage } from './pages/bans.js'; // YENİ
 import { initAuthorizedUsersPage } from './pages/authorized-users.js'; // YENİ
 import { initPanelLogsPage } from './pages/panel-logs.js'; // YENİ
+import { initMusicPlayerPage } from './pages/music.js'; // YENİ
 import { initPluginsPage, setupPluginPageListeners } from './pages/plugins.js';
 
 const pageInitializers = {
@@ -31,6 +32,7 @@ const pageInitializers = {
     'bans-page': initBansPage, // YENİ
     'warnings-page': initWarningsPage, // YENİ
     'authorized-users-page': initAuthorizedUsersPage, // YENİ
+    'music-player-page': initMusicPlayerPage, // YENİ
     'panel-logs-page': initPanelLogsPage, // YENİ
     'plugins-page': initPluginsPage,
 };
@@ -93,8 +95,7 @@ async function switchPage(pageId, force = false) {
         if (initializer) { // Önbellek kontrolü
             const dataKey = pageId.split('-')[0]; // 'members-page' -> 'members'
             // 'members', 'stats', 'summary' (dashboard için) gibi anahtar veriler zaten yüklüyse, tekrar yükleme.
-            // Her zaman yeniden yüklenmesi gereken sayfalar
-            const alwaysReload = ['plugins', 'roles', 'custom-commands', 'backups', 'stats', 'dashboard', 'authorized-users', 'panel-logs']; // YENİ
+            const alwaysReload = ['plugins', 'roles', 'custom-commands', 'backups', 'stats', 'dashboard', 'authorized-users', 'panel-logs', 'music-player']; // YENİ
             if (force || alwaysReload.includes(dataKey) || !state.isDataLoaded(dataKey)) {
                 await initializer();
             } else {
@@ -204,6 +205,11 @@ function updatePluginCardsUI() {
     if (settings.tickets) {
         ui.renderTicketTopicsList(settings.tickets.topics);
     }
+    // YENİ: Otomatik Moderasyon listelerini render et
+    if (settings.autoModeration) {
+        ui.renderBannedWordsList(settings.autoModeration.bannedWords);
+        ui.renderAutoModIgnoredRoles(roles, settings.autoModeration.ignoredRoles);
+    }
     // Bilet sistemi gibi daha karmaşık listeler için de buraya ekleme yapılabilir.
 }
 
@@ -291,77 +297,124 @@ function setupEventListeners() {
     // =================================================================
     document.body.addEventListener('click', async (e) => {
         const target = e.target;
+
+        // --- 1. data-action niteliğine sahip butonları işle ---
         const actionTarget = target.closest('[data-action]');
-        if (!actionTarget) return;
+        if (actionTarget) {
+            const action = actionTarget.dataset.action;
+            switch (action) {
+                // Çıkış yapma butonu için data-action eklendi
+                case 'logout':
+                    window.location.href = '/auth/logout';
+                    break;
 
-        const action = actionTarget.dataset.action;
-
-        switch (action) {
-            // YENİ: Çıkış yapma butonu için data-action eklendi
-            case 'logout':
-                window.location.href = '/auth/logout';
-                break;
-
-            case 'save-all': {
-                const saveButtons = document.querySelectorAll('.save-button.has-unsaved-changes');
-                console.log(`[Save All] Found ${saveButtons.length} settings to save.`);
-                ui.showToast(`Tüm ayarlar kaydediliyor... (${saveButtons.length} adet)`, 'info');
-                const savePromises = Array.from(saveButtons).map(btn => saveSettings(btn));
-                try {
-                    await Promise.all(savePromises);
-                    ui.showToast('Tüm değişiklikler başarıyla kaydedildi!', 'success');
-                } catch (error) {
-                    console.error("Toplu kaydetme sırasında hata:", error);
-                    ui.showToast('Bazı ayarlar kaydedilirken bir hata oluştu.', 'error');
+                case 'save-all': {
+                    const saveButtons = document.querySelectorAll('.save-button.has-unsaved-changes');
+                    console.log(`[Save All] Found ${saveButtons.length} settings to save.`);
+                    ui.showToast(`Tüm ayarlar kaydediliyor... (${saveButtons.length} adet)`, 'info');
+                    const savePromises = Array.from(saveButtons).map(btn => saveSettings(btn));
+                    try {
+                        await Promise.all(savePromises);
+                        ui.showToast('Tüm değişiklikler başarıyla kaydedildi!', 'success');
+                    } catch (error) {
+                        console.error("Toplu kaydetme sırasında hata:", error);
+                        ui.showToast('Bazı ayarlar kaydedilirken bir hata oluştu.', 'error');
+                    }
+                    break;
                 }
-                break;
+
+                case 'save-plugin':
+                    await saveSettings(actionTarget);
+                    break;
+
+                case 'collapse-plugin':
+                    if (!target.closest('.switch')) {
+                        actionTarget.closest('.plugin-card')?.classList.toggle('collapsed');
+                    }
+                    break;
+
+                case 'reset-all-settings': {
+                    const confirmed = await ui.showConfirmModal('Tüm Ayarları Sıfırla', 'Bu sunucu için yapılandırılmış TÜM eklenti ayarlarını varsayılan değerlerine sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz.');
+                    if (!confirmed) return;
+                    try {
+                        await api.resetAllSettings(state.selectedGuildId);
+                        ui.showToast('Tüm ayarlar başarıyla sıfırlandı. Panel yenileniyor...', 'success');
+                        setTimeout(() => loadGuildData(state.selectedGuildId), 1500);
+                    } catch (error) {
+                        ui.showToast(`Hata: ${error.message}`, 'error');
+                    }
+                    break;
+                }
+
+                case 'export-settings': {
+                    const settingsToExport = state.guildData.settings;
+                    if (!settingsToExport || Object.keys(settingsToExport).length === 0) {
+                        ui.showToast('Dışa aktarılacak ayar bulunamadı.', 'warning');
+                        return;
+                    }
+                    const dataStr = JSON.stringify(settingsToExport, null, 4);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `sunucu-ayarlari-${state.selectedGuildId}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    break;
+                }
+                case 'import-settings':
+                    document.getElementById('import-settings-input')?.click();
+                    break;
             }
+        }
 
-            case 'save-plugin':
-                await saveSettings(actionTarget);
-                break;
+        // --- 2. Otomatik Moderasyon kartındaki özel butonları işle ---
+        const autoModCard = target.closest('.plugin-card[data-module="autoModeration"]');
+        if (autoModCard) {
+            const settings = state.guildData.settings.autoModeration;
+            if (!settings) return;
 
-            case 'collapse-plugin':
-                if (!target.closest('.switch')) {
-                    actionTarget.closest('.plugin-card')?.classList.toggle('collapsed');
+            // Yasaklı kelime ekle
+            if (target.id === 'add-banned-word-btn') {
+                const input = document.getElementById('new-banned-word');
+                const word = input.value.trim().toLowerCase();
+                if (word && !settings.bannedWords.includes(word)) {
+                    settings.bannedWords.push(word);
+                    ui.renderBannedWordsList(settings.bannedWords);
+                    input.value = '';
+                    autoModCard.querySelector('.save-button').classList.add('has-unsaved-changes');
+                    ui.updateUnsavedChangesBar();
                 }
-                break;
-
-            case 'reset-all-settings': {
-                const confirmed = await ui.showConfirmModal('Tüm Ayarları Sıfırla', 'Bu sunucu için yapılandırılmış TÜM eklenti ayarlarını varsayılan değerlerine sıfırlamak istediğinizden emin misiniz? Bu işlem geri alınamaz.');
-                if (!confirmed) return;
-                try {
-                    await api.resetAllSettings(state.selectedGuildId);
-                    ui.showToast('Tüm ayarlar başarıyla sıfırlandı. Panel yenileniyor...', 'success');
-                    setTimeout(() => loadGuildData(state.selectedGuildId), 1500);
-                } catch (error) {
-                    ui.showToast(`Hata: ${error.message}`, 'error');
-                }
-                break;
             }
-
-            case 'export-settings': {
-                const settingsToExport = state.guildData.settings;
-                if (!settingsToExport || Object.keys(settingsToExport).length === 0) {
-                    ui.showToast('Dışa aktarılacak ayar bulunamadı.', 'warning');
-                    return;
-                }
-                const dataStr = JSON.stringify(settingsToExport, null, 4);
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `sunucu-ayarlari-${state.selectedGuildId}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                break;
+            // Yasaklı kelime sil
+            else if (target.closest('.remove-item-btn')?.dataset.word) {
+                const wordToRemove = target.closest('.remove-item-btn').dataset.word;
+                settings.bannedWords = settings.bannedWords.filter(w => w !== wordToRemove);
+                ui.renderBannedWordsList(settings.bannedWords);
+                autoModCard.querySelector('.save-button').classList.add('has-unsaved-changes');
+                ui.updateUnsavedChangesBar();
             }
-
-            case 'import-settings':
-                document.getElementById('import-settings-input')?.click();
-                break;
+            // Görmezden gelinecek rol ekle
+            else if (target.id === 'add-automod-ignored-role-btn') {
+                const select = document.getElementById('automod-ignored-role-select');
+                const roleId = select.value;
+                if (roleId && !settings.ignoredRoles.includes(roleId)) {
+                    settings.ignoredRoles.push(roleId);
+                    ui.renderAutoModIgnoredRoles(state.guildData.roles, settings.ignoredRoles);
+                    autoModCard.querySelector('.save-button').classList.add('has-unsaved-changes');
+                    ui.updateUnsavedChangesBar();
+                }
+            }
+            // Görmezden gelinecek rol sil
+            else if (target.closest('#automod-ignored-roles-list .remove-item-btn')) {
+                const roleIdToRemove = target.closest('.remove-item-btn').dataset.id;
+                settings.ignoredRoles = settings.ignoredRoles.filter(id => id !== roleIdToRemove);
+                ui.renderAutoModIgnoredRoles(state.guildData.roles, settings.ignoredRoles);
+                autoModCard.querySelector('.save-button').classList.add('has-unsaved-changes');
+                ui.updateUnsavedChangesBar();
+            }
         }
     });
 
@@ -468,6 +521,11 @@ export async function saveSettings(button) {
     if (moduleName === 'tickets') {
         // Bilet konularını doğrudan state'den alıp kaydetme verisine ekleyin
         settings.topics = state.guildData.settings.tickets?.topics || [];
+    }
+    // YENİ: Otomatik Moderasyon verilerini kaydet
+    if (moduleName === 'autoModeration') {
+        settings.bannedWords = state.guildData.settings.autoModeration?.bannedWords || [];
+        settings.ignoredRoles = state.guildData.settings.autoModeration?.ignoredRoles || [];
     }
 
     const isGlobalModule = moduleName === 'botStatus';

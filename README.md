@@ -8,11 +8,9 @@ Bu proje, Discord sunucularınızı kolayca yönetmenizi sağlayan, modüler bir
 - **Modüler Yapı:** İhtiyacınıza göre özellikleri (modülleri) kolayca etkinleştirin veya devre dışı bırakın.
 - **Rol Yönetimi:** Web paneli üzerinden rol oluşturun, düzenleyin, silin ve üyelere rol atayın.
 - **Kanal Yönetimi:** Kanalları ve kategorileri görüntüleyin.
-- **Detaylı İstatistikler:** Üye, kanal, rol sayıları ve çevrimiçi durumlar gibi detaylı sunucu istatistikleri.
-- **Sunucu Denetim Kaydı:** Sunucudaki son olayları (rol oluşturma, kanal silme vb.) panelden takip edin.
+- **Sunucu İstatistikleri:** Üye, kanal, rol sayıları ve çevrimiçi durumlar gibi detaylı istatistikler.
+- **Denetim Kaydı:** Sunucudaki son olayları panelden takip edin.
 - **Gelişmiş Uyarı Sistemi:** `/uyar`, `/uyarılar` ve `/uyarı-sil` komutları ile moderasyonu kolaylaştırır. Web panelinden ayarlanabilen otomatik ceza (susturma, atma, yasaklama) kuralları sunar.
-- **Panel Denetim Kaydı:** Panel üzerinden yapılan tüm önemli işlemlerin (ayar değiştirme, rol silme vb.) kim tarafından, hangi sunucuda ve ne zaman yapıldığını kaydeden, **kullanıcıya ve tarihe göre filtrelenebilir** bir denetim kaydı.
-- **Gelişmiş Yetki Yönetimi:** Bot sahibi ve güvenilir kullanıcılar için özel sayfalara (Giriş Yapanlar, Panel Logları) erişim imkanı ve yetkisiz erişimler için modern uyarı arayüzleri.
 - **Yasaklama Yönetimi:** Gelişmiş `/ban` ve `/unban` komutları. Web panelinden yasaklı kullanıcıları görüntüleme ve yasaklarını kaldırma.
 - **Süper Kilitli Kanallar:** `/lockdown` komutu ile yöneticilerin bile özel izin olmadan giremeyeceği, tamamen izole edilmiş metin ve ses kanalları oluşturma.
 - **Seviye Sistemi:** Sunucu içi etkileşimi artırmak için XP ve seviye sistemi.
