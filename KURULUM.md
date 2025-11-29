@@ -51,7 +51,7 @@ Müzik botunun stabil çalışması ve şarkıları hatasız bulabilmesi için b
 1.  Bilgisayarınızda Chrome veya Firefox tarayıcısını açın.
 2.  **YouTube.com**'a gidin ve bir Google hesabına giriş yapın.
 3.  Tarayıcınıza **"Get cookies.txt LOCALLY"** adlı eklentiyi kurun.
-    *   [Chrome için Eklenti Linki]([https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cbojebbeobfhnofknioajgaonaoedmmg](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc))
+    *   [Chrome için Eklenti Linki]([https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cbojebbeobfhnofknioajgaonaoedmmg](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
     *   [Firefox için Eklenti Linki](https://addons.mozilla.org/tr/firefox/addon/get-cookies-txt-locally/)
 4.  Eklentiyi kurduktan sonra, YouTube sekmesi açıkken tarayıcınızın sağ üst köşesindeki eklenti ikonuna tıklayın.
 5.  Açılan küçük pencerede, ortadaki **"Export"** butonuna tıklayarak `cookies.txt` dosyasını indirin.
