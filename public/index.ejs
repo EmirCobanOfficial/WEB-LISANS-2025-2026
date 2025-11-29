@@ -59,6 +59,15 @@
           <a href="#" class="nav-link" data-page="plugins-page">
             <i class="fa-solid fa-puzzle-piece fa-fw"></i> Eklentiler
           </a>
+          <!-- YENİ: Sadece bot sahibi görebilir -->
+          <% if (isBotOwner) { %>
+            <a href="#" class="nav-link" data-page="authorized-users-page">
+              <i class="fa-solid fa-user-check fa-fw"></i> Giriş Yapanlar
+            </a>
+            <a href="#" class="nav-link" data-page="panel-logs-page">
+              <i class="fa-solid fa-file-lines fa-fw"></i> Panel Logları
+            </a>
+          <% } %>
         </nav>
         <div class="sidebar-footer">
           <button id="add-server-btn" class="sidebar-btn" data-action="add-server">
@@ -1405,6 +1414,39 @@
           </p>
           <div id="backups-list-container" class="backups-list-container">
             <!-- Backups will be dynamically inserted here -->
+          </div>
+        </div>
+        <!-- YENİ: Giriş Yapanlar Sayfası İçeriği -->
+        <div class="page-content" id="authorized-users-page" style="display: none;">
+          <header class="main-header">
+              <h2><i class="fa-solid fa-user-check"></i> Panele Giriş Yapanlar</h2>
+          </header>
+          <p class="setting-description">
+              Bu liste, panele başarıyla giriş yapmış son 50 kullanıcıyı gösterir. Bu özellik, bot sahibi dışındaki kişilerin panele erişim denemelerini takip etmek için kullanışlıdır.
+          </p>
+          <div class="audit-log-container">
+              <div id="authorized-users-list">
+                  <!-- Giriş yapan kullanıcılar buraya JS ile eklenecek -->
+              </div>
+          </div>
+        </div>
+        <!-- YENİ: Panel Logları Sayfası -->
+        <div class="page-content" id="panel-logs-page" style="display: none;">
+          <header class="main-header">
+            <h2><i class="fa-solid fa-file-lines"></i> Panel İşlem Logları</h2>
+            <div class="header-controls">
+              <input type="text" id="panel-logs-user-filter" class="setting-input" placeholder="Kullanıcıya göre filtrele...">
+              <input type="date" id="panel-logs-date-filter" class="setting-input">
+              <button id="panel-logs-clear-filters" class="header-action-btn" style="background: var(--bg-quaternary);"><i class="fa-solid fa-xmark"></i> Filtreleri Temizle</button>
+            </div>
+          </header>
+          <p class="setting-description">
+              Bu sayfada, panele giriş yapan kullanıcıların yaptığı son 200 işlem listelenir. Bu özellik sadece bot sahibi tarafından görüntülenebilir.
+          </p>
+          <div class="audit-log-container">
+              <div id="panel-logs-list">
+                  <!-- Panel logları buraya JS ile eklenecek -->
+              </div>
           </div>
         </div>
       </main>

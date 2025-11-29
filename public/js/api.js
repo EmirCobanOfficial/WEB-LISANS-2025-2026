@@ -36,6 +36,8 @@ export const api = {
     getGuildBans: (guildId) => fetchJSON(`/api/guild/${guildId}/bans`), // YENİ
     getPermissions: () => fetchJSON('/api/permissions'),
     getAuditLogEvents: () => fetchJSON('/api/audit-log-events'),
+    getAuthorizedUsers: () => fetchJSON('/api/authorized-users'), // YENİ: Giriş yapanları getiren rota
+    getPanelLogs: () => fetchJSON('/api/panel-logs'), // YENİ: Panel loglarını getiren rota
 
     // POST, PATCH, DELETE istekleri
     saveSettings: (guildId, moduleName, newSettings) => fetchJSON('/api/settings', {

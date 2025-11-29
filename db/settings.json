@@ -199,7 +199,7 @@
             "enabled": true,
             "demoteOnDelete": true,
             "logChannelId": "1177940268704616548",
-            "safeRolesSelect": ""
+            "safeRolesSelect": "1177923537655320646"
         },
         "jail": {
             "enabled": true,
@@ -217,6 +217,104 @@
             "channels": [
                 "1444109359842984111"
             ]
+        }
+    },
+    "1095806798293897306": {
+        "announcements": {
+            "enabled": false,
+            "channelId": null,
+            "panelViewerRoleId": null,
+            "allowedRoles": [],
+            "mentionRoleId": null
+        },
+        "antiRaid": {
+            "enabled": false,
+            "messageLimit": 5,
+            "timeInterval": 3000,
+            "action": "timeout"
+        },
+        "antiSpam": {
+            "enabled": false,
+            "blockInvites": true,
+            "blockLinks": false,
+            "allowedRoles": [],
+            "logChannelId": null
+        },
+        "autorole": {
+            "enabled": false,
+            "roleId": null
+        },
+        "botStatus": {
+            "enabled": true,
+            "statusType": "online",
+            "activityType": "Playing",
+            "activityText": "Web Paneli"
+        },
+        "customCommands": {
+            "enabled": false,
+            "commands": []
+        },
+        "economy": {
+            "enabled": false,
+            "currencySymbol": "💰",
+            "moneyPerMessage": 1,
+            "dailyAmount": 100,
+            "workAmountMin": 10,
+            "workAmountMax": 50,
+            "workCooldown": 3600000,
+            "marketItems": []
+        },
+        "giveaways": {
+            "enabled": true,
+            "embedColor": "#5865F2",
+            "reaction": "🎉"
+        },
+        "inviteTracker": {
+            "enabled": false,
+            "logChannelId": "",
+            "rewardRoles": []
+        },
+        "moderation": {
+            "enabled": false,
+            "logChannelId": null,
+            "protectedChannelIds": [],
+            "autoPunishments": []
+        },
+        "reactionRoles": {
+            "enabled": false,
+            "channelId": "",
+            "messageId": "",
+            "emoji": "",
+            "roleId": ""
+        },
+        "register": {
+            "enabled": false,
+            "staffRoleId": null,
+            "registeredRoleId": null,
+            "unregisteredRoleId": null,
+            "logChannelId": null,
+            "nicknameTemplate": "{isim} | {yas}",
+            "welcomeMessage": "",
+            "statsEnabled": true
+        },
+        "tickets": {
+            "enabled": false,
+            "categoryId": null,
+            "supportRoleId": null,
+            "logChannelId": null,
+            "welcomeMessage": "Destek ekibimiz en kısa sürede size yardımcı olacaktır. Lütfen sorununuzu detaylı bir şekilde açıklayınız.",
+            "topics": []
+        },
+        "welcome": {
+            "enabled": false,
+            "welcomeEnabled": true,
+            "welcomeChannelId": "",
+            "welcomeMessage": "Aramıza hoş geldin, {user}! 🎉",
+            "welcomeBackgroundImage": "",
+            "goodbyeEnabled": true,
+            "goodbyeChannelId": "",
+            "goodbyeMessage": "Görüşürüz, {user}! 👋",
+            "goodbyeBackgroundImage": ""
         }
     }
 }

@@ -1516,6 +1516,106 @@ input:checked + .slider:before {
   color: white;
 }
 
+/* =================================================================
+   YETKİSİZ ERİŞİM UYARISI STİLİ (YENİ)
+   ================================================================= */
+.access-denied-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  background: rgba(239, 68, 68, 0.05); /* Hafif kırmızımsı arkaplan */
+  border: 1px solid var(--red);
+  border-radius: 20px;
+  margin-top: 20px;
+  color: var(--text-secondary);
+}
+
+.access-denied-notice i {
+  font-size: 3.5em;
+  color: var(--red);
+  margin-bottom: 25px;
+}
+
+.access-denied-notice h3 {
+  font-size: 1.6em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.header-controls .header-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+}
+
+/* =================================================================
+   GİRİŞ YAPANLAR SAYFASI STİLLERİ (YENİ)
+   ================================================================= */
+
+#authorized-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Kartlar arası boşluk */
+}
+
+.user-entry {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  padding: 20px 25px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-cyan); /* Sol tarafta belirgin bir çizgi */
+  transition: all 0.3s ease;
+}
+
+.user-entry:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(5px);
+  border-color: var(--accent-cyan);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info .avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-tag {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.05em;
+}
+
+.user-id {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  font-family: "Courier New", Courier, monospace;
+}
+
+.login-timestamp {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
 .confirm-modal-actions .sidebar-btn.danger:hover {
   box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
 }

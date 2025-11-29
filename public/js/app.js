@@ -13,6 +13,8 @@ import { initCustomCommandsPage } from './pages/customCommands.js'; // YENİ
 import { initBackupsPage } from './pages/backups.js';
 import { initWarningsPage } from './pages/warnings.js'; // YENİ
 import { initBansPage } from './pages/bans.js'; // YENİ
+import { initAuthorizedUsersPage } from './pages/authorized-users.js'; // YENİ
+import { initPanelLogsPage } from './pages/panel-logs.js'; // YENİ
 import { initPluginsPage, setupPluginPageListeners } from './pages/plugins.js';
 
 const pageInitializers = {
@@ -28,6 +30,8 @@ const pageInitializers = {
     'backups-page': initBackupsPage,
     'bans-page': initBansPage, // YENİ
     'warnings-page': initWarningsPage, // YENİ
+    'authorized-users-page': initAuthorizedUsersPage, // YENİ
+    'panel-logs-page': initPanelLogsPage, // YENİ
     'plugins-page': initPluginsPage,
 };
 
@@ -89,8 +93,8 @@ async function switchPage(pageId, force = false) {
         if (initializer) { // Önbellek kontrolü
             const dataKey = pageId.split('-')[0]; // 'members-page' -> 'members'
             // 'members', 'stats', 'summary' (dashboard için) gibi anahtar veriler zaten yüklüyse, tekrar yükleme.
-            // Eklentiler ve roller gibi temel veriler her zaman yüklü kabul edilir.
-            const alwaysReload = ['plugins', 'roles', 'custom-commands', 'backups', 'stats', 'dashboard'];
+            // Her zaman yeniden yüklenmesi gereken sayfalar
+            const alwaysReload = ['plugins', 'roles', 'custom-commands', 'backups', 'stats', 'dashboard', 'authorized-users', 'panel-logs']; // YENİ
             if (force || alwaysReload.includes(dataKey) || !state.isDataLoaded(dataKey)) {
                 await initializer();
             } else {
